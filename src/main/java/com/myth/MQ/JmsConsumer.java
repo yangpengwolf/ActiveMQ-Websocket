@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.TextMessage;
 import java.io.IOException;
 
 @Component
@@ -22,11 +23,14 @@ public class JmsConsumer {
     @JmsListener(destination = "${activemq.topic}", containerFactory = "firstTopicListener")
     @Async // receive msg asynchronously
     //@Async("taskExecutePool")
+
     public void receiveTopic(Message msg) throws JMSException,NullPointerException {
-        logger.info(Thread.currentThread().getName() + ": topic===========" + msg.getStringProperty("value"));
+        TextMessage msgt= (TextMessage)msg;
+
+        logger.info(Thread.currentThread().getName() + ": topic===========" +   msgt.getText());
         try {
-            Thread.sleep(1000L);
-            webSocketServer.sendInfo(msg.getStringProperty("value"));
+            Thread.sleep(2000L);
+            webSocketServer.sendInfo( msgt.getText());
             //logger.info(msg.toString());
             // msg.acknowledge(); //消息确认
         } catch (InterruptedException e) {
@@ -55,7 +59,9 @@ public class JmsConsumer {
     public void receiveVTopicA1(Message msg) throws JMSException {
         logger.debug(Thread.currentThread().getName() + ": vtopic A1===========" + msg.getStringProperty("value"));
         try {
+
             Thread.sleep(1000L);
+            //webSocketServer.sendInfo(  msg.getText());
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
