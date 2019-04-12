@@ -1,5 +1,6 @@
 package com.myth.MQ;
 
+import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,20 +25,24 @@ public class JmsConsumer {
     @Async // receive msg asynchronously
     //@Async("taskExecutePool")
 
-    public void receiveTopic(Message msg) throws JMSException,NullPointerException {
-        TextMessage msgt= (TextMessage)msg;
+    public void receiveTopic(Message msg) throws JMSException, NullPointerException {
+        TextMessage msgT = (TextMessage) msg;
 
-        logger.info(Thread.currentThread().getName() + ": topic===========" +   msgt.getText());
+        logger.info(Thread.currentThread().getName() + ": topic===========" + msgT.getText());
         try {
             Thread.sleep(2000L);
-            webSocketServer.sendInfo( msgt.getText());
+            // 消息内容转为具体对象，数据类型更明晰
+            MsgEntity msgE = JSON.parseObject(msgT.getText(), MsgEntity.class);// 推荐该转换方案webSocketServer.sendInfo( msgt.getText());
+            webSocketServer.sendMessage(JSON.toJSONString(msgE));
             //logger.info(msg.toString());
             // msg.acknowledge(); //消息确认
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }catch (IOException e)
-        {e.printStackTrace();}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         logger.debug(Thread.currentThread().getName() + ": topic===========" + msg.getStringProperty("value"));
     }
 
