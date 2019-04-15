@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -11,13 +12,18 @@ import org.springframework.stereotype.Component;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
-import java.io.IOException;
 
 @Component
 public class JmsConsumer {
 
     @Autowired
     private WebSocketServer webSocketServer;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+//    @Autowired
+//    private JdbcTemplate jdbcTemplate;
 
     private Logger logger = LoggerFactory.getLogger(JmsConsumer.class);
 
@@ -33,15 +39,19 @@ public class JmsConsumer {
             Thread.sleep(2000L);
             // 消息内容转为具体对象，数据类型更明晰
             MsgEntity msgE = JSON.parseObject(msgT.getText(), MsgEntity.class);// 推荐该转换方案webSocketServer.sendInfo( msgt.getText());
-            webSocketServer.sendMessage(JSON.toJSONString(msgE));
+           // webSocketServer.sendMessage(JSON.toJSONString(msgE));
+            logger.info("MSG Inster Into Mongdb=============Start!");
+            mongoTemplate.insert(msgE);
+            logger.info("MSG Inster Into Mongdb=============End!");
             //logger.info(msg.toString());
             // msg.acknowledge(); //消息确认
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         logger.debug(Thread.currentThread().getName() + ": topic===========" + msg.getStringProperty("value"));
     }

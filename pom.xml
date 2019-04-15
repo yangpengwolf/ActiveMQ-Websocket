@@ -66,13 +66,33 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
         <!--mongoDB-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
+
+
+        <!--&lt;!&ndash;Springboot整合Nutz&ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.nutz</groupId>-->
+            <!--<artifactId>nutz-plugins-spring-boot-starter</artifactId>-->
+            <!--<version>1.r.66</version>-->
+        <!--</dependency>-->
+        <!--&lt;!&ndash;阿里的数据连接池&ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.alibaba</groupId>-->
+            <!--<artifactId>druid-spring-boot-starter</artifactId>-->
+            <!--<version>1.1.9</version>-->
+        <!--</dependency>-->
+
+
 
         <!--引入json处理包-->
         <dependency>
